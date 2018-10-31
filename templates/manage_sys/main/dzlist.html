@@ -1,0 +1,123 @@
+<style>
+	.d1{
+		background-color: rgb(53,60,68);
+		position: relative;
+		height: 30px;
+		line-height: 30px;
+		padding-left: 10px;
+	}
+	.s1{
+		font-size: 12px;
+		color: white;
+	}
+	.s2{
+		position: absolute;
+		right: 10px;
+	}
+	.s2 a{
+		color: white;
+		font-size: 12px;
+		text-decoration: none;
+	}
+	.t1{
+		border-color:aliceblue;
+		margin-top: 2px;
+		font-size: 12px;
+		text-align: center;
+		background-color: rgb(230,242,254);
+	}
+	.bottom{
+		font-size: 13px;
+		padding-left: 15px;
+		position: relative;
+	}
+	.bs{
+		position: absolute;
+		right: 40px;
+	}
+	.bs a{
+		text-decoration: none;
+		color: black;
+	}
+	.bs a:hover{
+		color: cornflowerblue;
+		text-decoration: underline;
+	}
+</style>
+<script type="text/javascript" src="/static/js/jquery-latest.js"></script>
+<div class="d1">
+	<span class="s1">订单管理</span>
+	<span class="s2">
+		<a href="">添加</a>
+		<a href="" id="deleteBtn">删除</a>
+	</span>
+
+</div>
+<table border="2" width="100%" cellspacing="0" class="t1">
+	<tr>
+		<td>
+			<input type="checkbox" />
+		</td>
+		<td>地址ID</td>
+		<td>用户名</td>
+		<td>详细地址</td>
+		<td>邮编</td>
+		<td>收件人</td>
+		<td>座机</td>
+		<td>手机号</td>
+	</tr>
+    {% for i in address %}
+    <tr>
+       <td>
+			<input type="checkbox" value="{{ i.id }}" name='selectframe'/>
+		</td>
+		<td>{{ i.id }}</td>
+        {% for j in user %}
+        {% if j.user_id == i.user_id %}
+
+		    <td>{{ j.user_name}}</td>
+        {% endif %}
+        {% endfor %}
+		<td>{{ i.detail_address }}</td>
+		<td>{{ i.zipcode }}</td>
+		<td>{{ i.name }}</td>
+		<td>{{ i.telphone }}</td>
+		<td>{{ i.addr_mobile }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<div class="bottom">
+	共有 {{ length }}条记录，当前第{{ page_num }} 页，共{{ num_pages }} 页
+
+{#    分页#}
+    <span class="bs">
+        {% if address.has_previous %}
+        <a href="{% url 'manage:dzlist' %}?num= {{ address.previous_page_number }}" style="margin-right: 20px;">上一页</a>
+{#		<a href="#" style="margin-right: 20px;">上一页</a>#}
+		{% endif %}
+        {% if address.has_next %}
+        <a href="{% url 'manage:dzlist' %}?num= {{ address.next_page_number }}">下一页</a>
+        {% endif %}
+	</span>
+</div>
+
+    <script type="text/javascript">
+    $('#deleteBtn').click(function () {
+        console.log(666);
+        $("input[name='selectframe']:checked").each(function (index,ele) {
+            var num = $(ele).val();
+            console.log(num);
+            var csrftoken="{{ csrf_token }}";
+            $.ajaxSetup({headers:{"X-CSRFToken":csrftoken}});
+            $.ajax({
+                type:"post",//请求方式get/post
+                url:"{% url 'manage:address_del' %}",//请求地址
+                data:'address_id='+num,
+                dataType:"json",
+                success:function (json) {
+                    location.href='{% url "manage:dzlist" %}'
+                }
+            })
+        })
+    })
+</script>

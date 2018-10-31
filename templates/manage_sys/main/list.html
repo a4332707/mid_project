@@ -1,0 +1,126 @@
+<style>
+	.d1{
+		background-color: rgb(53,60,68);
+		position: relative;
+		height: 30px;
+		line-height: 30px;
+		padding-left: 10px;
+	}
+	.s1{
+		font-size: 12px;
+		color: white;
+	}
+	.s2{
+		position: absolute;
+		right: 10px;
+	}
+	.s2 a{
+		color: white;
+		font-size: 12px;
+		text-decoration: none;
+	}
+	.t1{
+		border-color:aliceblue;
+		margin-top: 2px;
+		font-size: 12px;
+		text-align: center;
+		background-color: rgb(230,242,254);
+	}
+	.bottom{
+		font-size: 13px;
+		padding-left: 15px;
+		position: relative;
+	}
+	.bs{
+		position: absolute;
+		right: 40px;
+	}
+	.bs a{
+		text-decoration: none;
+		color: black;
+	}
+	.bs a:hover{
+		color: cornflowerblue;
+		text-decoration: underline;
+	}
+</style>
+<script type="text/javascript" src="/static/js/jquery-latest.js"></script>
+<div class="d1">
+	<span class="s1">管理人员基本信息表</span>
+	<span class="s2">
+		<a href="{% url 'manage:add' %}">添加</a>
+		<a href="" id="deleteBtn">删除</a>
+	</span>
+</div>
+<table border="2" width="100%" cellspacing="0" class="t1">
+	<tr>
+		<td>
+			<input type="checkbox" />
+		</td>
+		<td>商品ID</td>
+		<td>商品名称</td>
+		<td>作者</td>
+		<td>出版社</td>
+		<td>市场价</td>
+		<td>当当价</td>
+		<td>库存</td>
+		<td>商品种类</td>
+		<td>基本操作</td>
+	</tr>
+
+    {% for i in book %}
+    <tr>
+		<td>
+			<input type="checkbox" name="selectframe" value="{{ i.book_id }}"/>
+		</td>
+		<td>{{ i.book_id }}</td>
+		<td>{{ i.book_name }}</td>
+		<td>{{ i.book_author }}</td>
+		<td>{{ i.book_publish }}</td>
+		<td>{{ i.book_price }}</td>
+		<td>{{ i.book_dprice }}</td>
+		<td></td>
+        {% for j in category2 %}
+
+        {% if j == i.book_category %}
+		    <td>{{ j.category_name }}</td>
+        {% endif %}
+
+        {% endfor %}
+		<td></td>
+	</tr>
+    {% endfor %}
+
+</table>
+<script type="text/javascript">
+    $('#deleteBtn').click(function () {
+        console.log(666);
+        $("input[name='selectframe']:checked").each(function (index,ele) {
+            var num = $(ele).val();
+            console.log(num);
+            var csrftoken="{{ csrf_token }}";
+            $.ajaxSetup({headers:{"X-CSRFToken":csrftoken}});
+            $.ajax({
+                type:"post",//请求方式get/post
+                url:"{% url 'manage:db_del' %}",//请求地址
+                data:'book_id='+num,
+                dataType:"json"
+            })
+        })
+    })
+</script>
+<div class="bottom">
+{#    页面数据#}
+	共有 {{ length }}条记录，当前第{{ page_num }} 页，共{{ num_pages }} 页
+
+{#    分页#}
+    <span class="bs">
+        {% if book.has_previous %}
+        <a href="{% url 'manage:list' %}?num= {{ book.previous_page_number }}" style="margin-right: 20px;">上一页</a>
+{#		<a href="#" style="margin-right: 20px;">上一页</a>#}
+		{% endif %}
+        {% if book.has_next %}
+        <a href="{% url 'manage:list' %}?num= {{ book.next_page_number }}">下一页</a>
+        {% endif %}
+	</span>
+</div>

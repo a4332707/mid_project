@@ -1,0 +1,84 @@
+<style>
+	.d1{
+		background-color: rgb(53,60,68);
+		position: relative;
+		height: 30px;
+		line-height: 30px;
+		padding-left: 10px;
+	}
+	.s1{
+		font-size: 12px;
+		color: white;
+	}
+	.s2{
+		position: absolute;
+		right: 10px;
+	}
+	.s2 a{
+		color: white;
+		font-size: 12px;
+		text-decoration: none;
+	}
+	.t1{
+		border-color:aliceblue;
+		margin-top: 2px;
+		font-size: 12px;
+		text-align: center;
+		background-color: rgb(230,242,254);
+	}
+	.bottom{
+		font-size: 13px;
+		padding-left: 15px;
+		position: relative;
+	}
+	.bs{
+		position: absolute;
+		right: 40px;
+	}
+	.bs a{
+		text-decoration: none;
+		color: black;
+	}
+	.bs a:hover{
+		color: cornflowerblue;
+		text-decoration: underline;
+	}
+</style>
+<script type="text/javascript" src="/static/js/jquery-latest.js"></script>
+<div class="d1">
+	<span class="s1">商品管理</span>
+	<span class="s2">
+		<a href="{% url 'manage:zjsp' %}">添加</a>
+		<a href="" onclick="selectionDel()">删除</a>
+	</span>
+</div>
+<table border="2" width="100%" cellspacing="0" class="t1">
+	<tr>
+		<td>商品ID</td>
+		<td>商品名称</td>
+		<td>更多</td>
+	</tr>
+    {% for i in category1 %}
+    <tr>
+		<td>{{ i.id }}</td>
+		<td>{{ i.name }}</td>
+		<td>
+			<input type="checkbox" value="{{ i.id }}" name='selectframe'/>
+		</td>
+	</tr>
+    {%  endfor %}
+</table>
+<div class="bottom">
+	共有 {{ length }}条记录，当前第{{ page_num }} 页，共{{ num_pages }} 页
+
+{#    分页#}
+    <span class="bs">
+        {% if category1.has_previous %}
+        <a href="{% url 'manage:splb' %}?num= {{ category1.previous_page_number }}" style="margin-right: 20px;">上一页</a>
+{#		<a href="#" style="margin-right: 20px;">上一页</a>#}
+		{% endif %}
+        {% if category1.has_next %}
+        <a href="{% url 'manage:splb' %}?num= {{ category1.next_page_number }}">下一页</a>
+        {% endif %}
+	</span>
+</div>

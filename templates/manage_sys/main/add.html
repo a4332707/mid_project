@@ -1,0 +1,80 @@
+<style>
+	.table1{
+		border-color: lightgray;
+	}
+	.td1,.td2{
+		height: 36px;
+	}
+	.td1{
+		text-align: right;
+		padding-right: 5px;
+		background-color: rgb(230,242,254);
+		font-size: 14px;
+	}
+	.td2{
+		padding-left: 5px;
+	}
+</style>
+<script type="text/javascript" src="/static/js/jquery-latest.js"></script>
+<table class="table1" border="1" cellspacing="0" width="1110px">
+	<tr>
+		<td class="td1">商品名称:</td>
+		<td class="td2">
+            <input type="text" value="" />
+        </td>
+	</tr>
+	<tr>
+		<td class="td1">作者:</td>
+		<td class="td2"><input type="text" value=""/></td>
+	</tr>
+	<tr>
+		<td class="td1">出版社:</td>
+		<td class="td2"><input type="text" value=""/></td>
+	</tr>
+	<tr>
+		<td class="td1">商品父类:</td>
+		<td class="td2">
+			<select>
+				<option>教材</option>
+                <option>外语</option>
+                <option>考试</option>
+                <option>中小学教辅</option>
+                <option>工具书</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td class="td1">出版日期:</td>
+		<td class="td2">
+			<input type="date" />
+		</td>
+	</tr>
+		<tr>
+		<td class="td1">出版日期:</td>
+		<td class="td2">
+			<input type="date" />
+		</td>
+	</tr>
+    <button type="button" onclick="submit()">提交</button>
+
+</table>
+
+<script type="text/javascript">
+    function submit() {
+        var name=$('.td2>input').eq(0).val();
+        var author=$('.td2>input').eq(1).val();
+        var publish_house=$('.td2>input').eq(2).val();
+        var publish_date=$('.td2>input').eq(3).val();
+        var variety=$('.td2>select').eq(0).val();
+        console.log(name,author,publish_house,publish_date,variety);
+        var csrftoken="{{ csrf_token }}";
+        $.ajaxSetup({headers:{"X-CSRFToken":csrftoken}});
+        $.ajax({
+            type:"post",//请求方式get/post
+            url:"{% url 'manage:add_logic' %}",//请求地址
+            data:'name='+name+'&author='+author+'&publish_house='+publish_house
+                    +'&publish_date='+publish_date+'&variety='+variety,
+            dataType:"json"
+        })
+    }
+</script>
